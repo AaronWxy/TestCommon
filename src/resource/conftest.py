@@ -69,7 +69,6 @@ def step_init(request):
     # print "Runs once before each test"
 
     def regi():
-        print "GOGOGO"
         global krakken
         krakken.logger.step_registry()
 
@@ -90,16 +89,19 @@ def pytest_sessionstart(session):
     start_time = time.time()
     case_start_time = start_time
 
-
 # def record_pytest_result(item, nextitem, test_name_dic, starttime=0):
-def pytest_runtest_protocol(item, nextitem, starttime=0):
+def pytest_runtest_protocol(item, nextitem):
     reports = runtestprotocol(item, nextitem=nextitem)
-    cases, status = [], []
+    # print "ACD" + str(len(reports))
     for report in reports:
         # h, r = divmod(report.duration, 3600)
         # m, s = divmod(r, 60)
         # time_elapsed = "{:0>2}h:{:0>2}m:{:05.2f}s".format(int(h), int(m), s)
-        try:
+        # print "A: " + str(report.when)
+        if report.when == 'setup':
+            print '\n%s --- %s' % (item.name, report.outcome)
+        return True
+        """try:
             t = report.duration
             time_elapsed = ("{:0>2}h:".format(int(t//3600)) if int(t//3600) > 0 else "") 
             + ("{:0>2}m:".format(int(t - 3600 * (t//3600))//60) if (t - 3600 * (t//3600))//60 > 0 
@@ -117,8 +119,7 @@ def pytest_runtest_protocol(item, nextitem, starttime=0):
                 current = Result(cnt, item.name, 1, case_start_time, c_end_time)
             results_collection.append(current)
             cnt += 1 
-            case_start_time = c_end_time
-
+            case_start_time = c_end_time"""
 
 def pytest_sessionfinish(session, exitstatus):
     for res in results_collection:

@@ -75,6 +75,5 @@ class Logger(object):
         """
 
         self.test_step += 1
-        print "registering >> " + str(self.test_step)
-
+        # print "registering >> " + str(self.test_step)
         self.__init__()

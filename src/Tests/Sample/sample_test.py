@@ -8,7 +8,6 @@ class TestSample:
     logger = None
     
     def test_configuration(self, init_suite):
-        print "START"
         self.__class__.krakken = init_suite
         self.logger = self.__class__.krakken.logger
         self.krakken.logger.info("CASE0")
@@ -18,3 +17,6 @@ class TestSample:
 
     def test_2(self):
         self.__class__.krakken.logger.info("CASE2")
+
+    def test_3(self):
+        pytest.fail("test failure")
