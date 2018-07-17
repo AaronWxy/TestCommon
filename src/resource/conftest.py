@@ -53,23 +53,27 @@ def CONFIG(request):
     return request.config.getoption("--CONFIG")
 
 # this run before all
-@pytest.fixture(scope="class", autouse=True)
-def init_suite(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG):
-    global krakken 
-    krakken = Krakken(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG)
-
-
-@pytest.fixture(scope="class")
-def get_krakken():
-    return krakken
+@pytest.fixture(scope="function", autouse=False)
+def init_suite(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG, request):
+    k = Krakken(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG)
+    global krakken
+    krakken = k
+    print type(krakken)
+    return k
 
 
 # this run before each
-@pytest.fixture(autouse=False)
-def test_step_init():
+@pytest.fixture(autouse=True)
+def step_init(request):
     # prepare something ahead of all tests
     # print "Runs once before each test"
-    krakken.logger.step_registry()
+
+    def regi():
+        print "GOGOGO"
+        global krakken
+        krakken.logger.step_registry()
+
+    request.addfinalizer(regi)
     
 
 class Result:

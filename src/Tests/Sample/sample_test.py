@@ -2,19 +2,19 @@ import pytest
 import pprint
 from src.components.core.Krakken import Krakken
 
-class TestSample(object):
+class TestSample:
 
     krakken = None
     logger = None
     
-    def test_configuration(self, get_krakken):
-        self.__class__.krakken = get_krakken
-        self.__class__.logger = self.__class__.krakken.logger
+    def test_configuration(self, init_suite):
+        print "START"
+        self.__class__.krakken = init_suite
+        self.logger = self.__class__.krakken.logger
+        self.krakken.logger.info("CASE0")
 
     def test_1(self):
-        self.__class__.krakken.logger.step_registry()
-        self.__class__.logger.info("CASE1")
+        self.__class__.krakken.logger.info("CASE1")
 
     def test_2(self):
-        self.__class__.krakken.logger.step_registry()
-        self.__class__.logger.info("CASE2")
+        self.__class__.krakken.logger.info("CASE2")

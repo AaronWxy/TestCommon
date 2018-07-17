@@ -10,6 +10,7 @@ class Logger(object):
     LOG_FILE_ERROR = 'test.err.log'
     BASE_LOG_LEVEL = logging.DEBUG
     test_step = 0
+    krakken_logger = None
 
     def __init__(self, base_folder="Output/"):
         """[Basic Logger Object]
@@ -19,9 +20,11 @@ class Logger(object):
         """
 
         # init the basic logger object
-        krakken_logger = None
-        krakken_logger = logging.getLogger('Krakken')
-        krakken_logger.setLevel(logging.DEBUG)
+        if self.krakken_logger:
+            krakken_logger = self.krakken_logger
+        else:
+            krakken_logger = logging.getLogger('Krakken')
+            krakken_logger.setLevel(logging.DEBUG)
 
         # create log folder if not exists
         if not os.path.isdir(base_folder):
@@ -34,6 +37,9 @@ class Logger(object):
         if not os.path.isfile(base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR):
             with open(base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR, 'a'):
                 pass 
+
+        for handler in krakken_logger.handlers[:]:
+            krakken_logger.removeHandler(handler)
 
         # set streaming logging to console
         console = logging.StreamHandler()
@@ -61,11 +67,14 @@ class Logger(object):
         self.error = krakken_logger.error
         self.debug = krakken_logger.debug
 
+        self.krakken_logger = krakken_logger
+
+
     def step_registry(self):
         """[Move the point to next and recreate the logger object]
         """
 
         self.test_step += 1
-        print "registering"
+        print "registering >> " + str(self.test_step)
 
         self.__init__()
