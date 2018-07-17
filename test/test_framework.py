@@ -4,7 +4,7 @@ import shutil
 
 class TestFramework(object):
 
-    debug = False
+    debug = True
 
     def test_logger(self):
         command = "python test/components/core/TestLogger.py"
@@ -16,6 +16,14 @@ class TestFramework(object):
 
     def test_krakken_1(self):
         command = "python test/components/core/TestKrakken.py"
+        command = command.split()
+        try:
+            subprocess.check_output(command)
+        except subprocess.CalledProcessError, e:
+            pytest.fail("Failed")
+
+    def test_html_reporter(self):
+        command = "python test/components/core/TestReporter.py"
         command = command.split()
         try:
             subprocess.check_output(command)

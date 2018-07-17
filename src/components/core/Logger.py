@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 
 
 class Logger(object):
@@ -18,6 +19,7 @@ class Logger(object):
         """
 
         # init the basic logger object
+        krakken_logger = None
         krakken_logger = logging.getLogger('Krakken')
         krakken_logger.setLevel(logging.DEBUG)
 
@@ -35,21 +37,21 @@ class Logger(object):
 
         # set streaming logging to console
         console = logging.StreamHandler()
-        console.setLevel(logging.INFO)
+        console.setLevel(logging.DEBUG)
         formatter = logging.Formatter('[%(levelname)-5s] %(message)s')
         console.setFormatter(formatter)
         krakken_logger.addHandler(console)
 
         # set the default logging to file test.inf.log
         file_handler_info = logging.FileHandler(
-            base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO, mode='w')
+            base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO, mode='w', encoding='utf-8')
         file_handler_info.setFormatter(logging.Formatter(self.LOG_FORMAT))
         file_handler_info.setLevel(logging.DEBUG)
         krakken_logger.addHandler(file_handler_info)
 
         # set file logging to test.err.log for level ERROR and above
         file_handler_err = logging.FileHandler(
-            base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR, mode='w')
+            base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR, mode='w', encoding='utf-8')
         file_handler_err.setFormatter(logging.Formatter(self.LOG_FORMAT))
         file_handler_err.setLevel(logging.ERROR)
         krakken_logger.addHandler(file_handler_err)
@@ -59,9 +61,11 @@ class Logger(object):
         self.error = krakken_logger.error
         self.debug = krakken_logger.debug
 
-    def test_step_registry(self):
+    def step_registry(self):
         """[Move the point to next and recreate the logger object]
         """
 
         self.test_step += 1
+        print "registering"
+
         self.__init__()
