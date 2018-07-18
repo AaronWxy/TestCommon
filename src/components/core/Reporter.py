@@ -117,7 +117,7 @@ class Report(object):
                                     # misc = read_options_as_dict_from_config("misc.ini", "TEST")
                                     if "JOB_NAME" in self.meta_dic and "BUILD_URL" in self.meta_dic:
                                         BUILD_ID = filter(None, self.meta_dic.get('BUILD_URL').split("/"))[-1]
-                                        with tag('a', klass=res.lower(), href="http://"+socket.gethostname()+"/jenkins/"+self.meta_dic.get("JOB_NAME")+"/"+self.meta_dic.get("BUILD_ID")+"/Output/"+str(cnt)):
+                                        with tag('a', klass=res.lower(), href="http://"+socket.gethostname()+"/jenkins/"+self.meta_dic.get("JOB_NAME")+"/"+BUILD_ID+"/Output/"+str(cnt)):
                                             with tag('span', style="font-family: monospace;"):
                                                 text(">")
                                     else:
