@@ -4,6 +4,8 @@ import pprint
 import socket
 from src.components.core.Krakken import Krakken
 from _pytest.runner import runtestprotocol
+from pytest import Function
+from functools import wraps
 
 
 cnt = 0
@@ -58,7 +60,30 @@ def init_suite(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG, requ
     k = Krakken(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG)
     global krakken
     krakken = k
-    print type(krakken)
+    request.config._metadata["TEST SUITE"] = "Mode Test"
+    if krakken.master in krakken.ip_map:
+        request.config._metadata["HOST"] = krakken.ip_map.get(krakken.master)
+    else:
+        request.config._metadata["HOST"] = krakken.master
+    request.config._metadata["VERSION"] = krakken.version
+    request.config._metadata["CONTENT"] = krakken.content_version
+    request.config._metadata["START TIME"] = str(time.ctime())
+    mandentory_delete = [
+            'BUILD_ID',
+            'BUILD_NUMBER',
+            'GIT_COMMIT',
+            'Python',
+            'NODE_NAME',
+            'BUILD_TAG',
+            'Platform',
+            'WORKSPACE',
+            'Plugins',
+            'Packages'
+    ]
+    for key in list(request.config._metadata):
+        if key in mandentory_delete:
+            del request.config._metadata[key]
+    krakken.reporter.log_meta_data(request)
     return k
 
 
@@ -68,11 +93,11 @@ def step_init(request):
     # prepare something ahead of all tests
     # print "Runs once before each test"
 
-    def regi():
-        global krakken
+    global krakken
+    if krakken:
         krakken.logger.step_registry()
-
-    request.addfinalizer(regi)
+    else:
+        init_suite
     
 
 class Result:
@@ -98,32 +123,24 @@ def pytest_runtest_protocol(item, nextitem):
         # m, s = divmod(r, 60)
         # time_elapsed = "{:0>2}h:{:0>2}m:{:05.2f}s".format(int(h), int(m), s)
         # print "A: " + str(report.when)
-        if report.when == 'setup':
-            print '\n%s --- %s' % (item.name, report.outcome)
+        """if report.when == 'call':
+            print '\n%s --- %s' % (item.name, report.outcome)"""
+        # print (item.name, report.outcome, report.when)
         return True
-        """try:
-            t = report.duration
-            time_elapsed = ("{:0>2}h:".format(int(t//3600)) if int(t//3600) > 0 else "") 
-            + ("{:0>2}m:".format(int(t - 3600 * (t//3600))//60) if (t - 3600 * (t//3600))//60 > 0 
-            or t//3600>0 else "") + "{:05.2f}s".format(t%60)
-        except:
-            time_elapsed = "-"
-        if report.when == 'call':
-            global cnt, results_collection, case_start_time
-            c_end_time = time.time()
-            if report.outcome == 'passed':
-                current = Result(cnt, item.name, 0, case_start_time, c_end_time)
-            elif report.outcome == 'failed':
-                current = Result(cnt, item.name, 2, case_start_time, c_end_time)
-            else:
-                current = Result(cnt, item.name, 1, case_start_time, c_end_time)
-            results_collection.append(current)
-            cnt += 1 
-            case_start_time = c_end_time"""
+        
 
 def pytest_sessionfinish(session, exitstatus):
     for res in results_collection:
         print "COUNTER: " + str(res.counter)
         print "RC: " + str(res.rc)
+
+    krakken.reporter.record_results()
+    krakken.reporter.create_report()
     # report_wrapping(start_time)
+    
+
+
+@pytest.fixture(autouse=True)
+def log_case_start_time(record_property):
+    record_property("case_start_time", time.time())
 

@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+import time
 
 
 class Logger(object):
@@ -77,3 +78,12 @@ class Logger(object):
         self.test_step += 1
         # print "registering >> " + str(self.test_step)
         self.__init__()
+
+    
+    def hibernate(self, sleep_time=5, purpose=""):
+        if not purpose:
+            self.info("Hibernating for " + str(sleep_time) + " sec")
+        else:
+            self.info("Hibernating for " + str(sleep_time) + "to: " + purpose)
+        time.sleep(sleep_time)
+        self.info("Wake Up!")

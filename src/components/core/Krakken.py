@@ -1,5 +1,6 @@
 import pprint 
 from src.components.core.Logger import Logger
+from src.components.core.Reporter import Report
 
 
 class Krakken(object):
@@ -23,6 +24,7 @@ class Krakken(object):
         self.variant = variant
         self.suite = suite 
         self.logger = Logger()
+        self.reporter = Report(self)
         self.config = test_config
         # DEBUG:
         self.logger.debug("\n")
