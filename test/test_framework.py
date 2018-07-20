@@ -22,14 +22,6 @@ class TestFramework(object):
         except subprocess.CalledProcessError, e:
             pytest.fail("Failed")
 
-    def test_html_reporter(self):
-        command = "python test/components/core/TestReporter.py"
-        command = command.split()
-        try:
-            subprocess.check_output(command)
-        except subprocess.CalledProcessError, e:
-            pytest.fail("Failed")
-
     def test_wrapper(self):
         if not self.__class__.debug:
             print "deleting the logs"

@@ -20,6 +20,8 @@ class Logger(object):
             base_folder {str} -- [the logger output location] (default: {"Output/"})
         """
 
+        self.base_folder = base_folder
+
         # init the basic logger object
         if self.krakken_logger:
             krakken_logger = self.krakken_logger
@@ -34,10 +36,10 @@ class Logger(object):
             os.mkdir(base_folder+str(self.test_step)+'/')
         if not os.path.isfile(base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO):
             with open(base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO, 'a'):
-                pass 
+                self.current_info = base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO
         if not os.path.isfile(base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR):
             with open(base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR, 'a'):
-                pass 
+                self.current_error = base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR 
 
         for handler in krakken_logger.handlers[:]:
             krakken_logger.removeHandler(handler)
@@ -80,10 +82,11 @@ class Logger(object):
         self.__init__()
 
     
-    def hibernate(self, sleep_time=5, purpose=""):
+    def hibernate(self, sleep_time=5, callback=False, purpose=""):
         if not purpose:
             self.info("Hibernating for " + str(sleep_time) + " sec")
         else:
             self.info("Hibernating for " + str(sleep_time) + "to: " + purpose)
         time.sleep(sleep_time)
-        self.info("Wake Up!")
+        if callback:
+            self.info("Wake Up!")

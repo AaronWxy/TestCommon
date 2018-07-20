@@ -1,11 +1,13 @@
 import pprint 
 from src.components.core.Logger import Logger
 from src.components.core.Reporter import Report
+from src.components.affiliate.SSH import SSH 
+from src.components.affiliate.SFTP import SFTP
 
 
 class Krakken(object):
 
-    def __init__(self, hosts, version, content_version="", ips="", variant="", suite="", test_config=""):
+    def __init__(self, hosts, version, content_version="", ips="", variant="", suite="", test_config="", passwordless=False, pkey=""):
         """[Base Test Object]
         
         Arguments:
@@ -25,7 +27,13 @@ class Krakken(object):
         self.suite = suite 
         self.logger = Logger()
         self.reporter = Report(self)
+        self.ssh = SSH(self)
+        self.sftp = SFTP(self)
         self.config = test_config
+        self.passwordless = passwordless
+        self.pkey = pkey 
+        if self.pkey:
+            self.passwordless = True
         # DEBUG:
         self.logger.debug("\n")
         self.logger.debug("HOSTS: " + pprint.pformat(self.hosts))
@@ -36,3 +44,5 @@ class Krakken(object):
         self.logger.debug("VARIANT: " + pprint.pformat(self.variant))
         self.logger.debug("SUITE: " + pprint.pformat(self.suite))
         self.logger.debug("TEST_CONFIG: " + pprint.pformat(self.config))
+        self.logger.debug("PASSWORDLESS: " + pprint.pformat(self.passwordless))
+        self.logger.debug("PRIVATEKEY: " + pprint.pformat(self.pkey))

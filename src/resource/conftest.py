@@ -24,6 +24,8 @@ def pytest_addoption(parser):
     parser.addoption("--VARIANT", action="store", default="", help="optional: provide the variant of system")
     parser.addoption("--SUITE", action="store", default="", help="optional: provide the variant of test suite")
     parser.addoption("--CONFIG", action="store", default="", help="optional: provide the extra config file for testing")
+    parser.addoption("--PASSWORDLESS", action="store", default=False, help="optional: if using passwordless connection")
+    parser.addoption("--PRIVATEKEY", action="store", default="", help="optional: provide privatekey location")
 
 
 @pytest.fixture(scope="session")
@@ -54,10 +56,18 @@ def SUITE(request):
 def CONFIG(request):
     return request.config.getoption("--CONFIG")
 
+@pytest.fixture(scope="session")
+def PASSWORDLESS(request):
+    return request.config.getoption("--PASSWORDLESS")
+
+@pytest.fixture(scope="session")
+def PRIVATEKEY(request):
+    return request.config.getoption("--PRIVATEKEY")
+
 # this run before all
 @pytest.fixture(scope="function", autouse=False)
-def init_suite(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG, request):
-    k = Krakken(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG)
+def init_suite(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG, PASSWORDLESS, PRIVATEKEY, request):
+    k = Krakken(HOSTS, VERSION, CONTENTVERSION, IPS, VARIANT, SUITE, CONFIG, PASSWORDLESS, PRIVATEKEY)
     global krakken
     krakken = k
     request.config._metadata["TEST SUITE"] = "Mode Test"
