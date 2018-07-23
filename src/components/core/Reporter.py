@@ -79,7 +79,7 @@ class Report(object):
                         for result in root.iter('testcase'):
                             if result.find("failure") is not None:
                                 res = "FAIL"
-                                with open("Output/failure", "a+") as r:
+                                with open("Output/failure", "a+") as r: 
                                     r.write("failed\n")
                             elif result.find("skipped") is not None:
                                 res = "SKIP"

@@ -36,10 +36,12 @@ class Logger(object):
             os.mkdir(base_folder+str(self.test_step)+'/')
         if not os.path.isfile(base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO):
             with open(base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO, 'a'):
-                self.current_info = base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO
+                pass 
+        self.current_info = base_folder+str(self.test_step)+'/'+self.LOG_FILE_INFO
         if not os.path.isfile(base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR):
             with open(base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR, 'a'):
-                self.current_error = base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR 
+                pass 
+        self.current_error = base_folder+str(self.test_step)+'/'+self.LOG_FILE_ERROR 
 
         for handler in krakken_logger.handlers[:]:
             krakken_logger.removeHandler(handler)

@@ -24,7 +24,12 @@ class TestSample:
         self.__class__.krakken.logger.hibernate(1)
 
     def test_3(self):
-        pytest.fail("test failure")
+        self.__class__.krakken.ssh.connect(self.__class__.krakken.master)
+        self.__class__.krakken.ssh.blocking_call("ls -a")
 
     def test_4(self):
-        pytest.skip("skip test")
+        self.__class__.krakken.ssh.connect(self.__class__.krakken.master)
+        self.__class__.krakken.sftp.open_sftp()
+        self.__class__.krakken.sftp.grab_from_remote_path('/var/log/caspida/caspida.out', 'Output/')
+
+    

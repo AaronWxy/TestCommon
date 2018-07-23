@@ -69,7 +69,7 @@ class SSH(object):
             self.logger.info(" ")
             self.logger.info("=" * 80)
             self.logger.info("[STD_OUT]")
-        stdin, stdout, stderr = ssh.exec_command(command, timeout=timeout)
+        stdin, stdout, stderr = self.connection.exec_command(command, timeout=timeout)
 
         stdout_list, stderr_list = [], []
         while not stdout.channel.exit_status_ready():
@@ -126,7 +126,7 @@ class SSH(object):
         stdin.close()
 
     def disconnect(self):
-        self.logger.info("Closing ssh connection!")
+        self.logger.info("Closing current ssh connection!")
         try:
             self.connection.close()
         except AttributeError:

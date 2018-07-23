@@ -146,6 +146,8 @@ def pytest_sessionfinish(session, exitstatus):
 
     krakken.reporter.record_results()
     krakken.reporter.create_report()
+    krakken.sftp.close_sftp()
+    krakken.ssh.disconnect()
     # report_wrapping(start_time)
     
 
